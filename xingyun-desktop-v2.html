@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>型云商城钢材价格查询 - 电脑端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .controls {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .control-section {
+            margin-bottom: 20px;
+        }
+        
+        .control-section-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .brand-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .brand-item {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        
+        .brand-item:hover {
+            background: #e9ecef;
+        }
+        
+        .brand-item.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .quick-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .quick-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .quick-btn:hover {
+            background: #dee2e6;
+        }
+        
+        .quick-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label {
+            font-size: 0.9em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        select, input[type="text"], input[type="number"] {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-bar {
+            padding: 15px 25px;
+            background: #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .status {
+            font-size: 0.95em;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .record-count {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .toolbar {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-size-selector label {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .page-size-btn {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 0.85em;
+            background: white;
+            color: #495057;
+            cursor: pointer;
+        }
+        
+        .page-size-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .sort-bar {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .sort-btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 0.85em;
+            background: white;
+            color: #495057;
+            cursor: pointer;
+        }
+        
+        .sort-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+        
+        .no-data-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .data-table th:hover {
+            background: #e9ecef;
+        }
+        
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            color: #495057;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .price-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .price-liji {
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+        
+        .price-bangji {
+            font-weight: 600;
+            color: #3498db;
+            font-size: 0.95em;
+        }
+        
+        .price-diff {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .detail-btn {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+        
+        .detail-btn:hover {
+            background: #5a6fd6;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 1.8em;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.8;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detail-item.full-width {
+            grid-column: span 3;
+        }
+        
+        .detail-item-label {
+            font-size: 0.85em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .detail-item-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .detail-item-value.price-liji {
+            color: #e74c3c;
+            font-size: 1.4em;
+        }
+        
+        .detail-item-value.price-bangji {
+            color: #3498db;
+            font-size: 1.4em;
+        }
+        
+        .init-loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .data-table {
+                font-size: 0.85em;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 10px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .detail-item.full-width {
+                grid-column: span 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>型云商城钢材价格查询</h1>
+            <p>二姑丈1.0</p>
+        </div>
+        
+        <div class="controls">
+            <!-- 品名选择 -->
+            <div class="control-section">
+                <div class="control-section-title">📦 选择品名（可多选）</div>
+                <div class="init-loading" id="brandLoading">
+                    <div class="spinner"></div>
+                    <p>正在加载品名列表...</p>
+                </div>
+                <div class="brand-selector" id="brandSelector" style="display:none;">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 快捷选择 -->
+            <div class="control-section">
+                <div class="control-section-title">⚡ 快捷选择</div>
+                <div class="quick-select">
+                    <button class="quick-btn" onclick="selectCategory('h')">H型钢</button>
+                    <button class="quick-btn" onclick="selectCategory('gz')">工字钢</button>
+                    <button class="quick-btn" onclick="selectCategory('jg')">角钢</button>
+                    <button class="quick-btn" onclick="selectCategory('cg')">槽钢</button>
+                    <button class="quick-btn" onclick="selectCategory('yg')">圆钢</button>
+                    <button class="quick-btn" onclick="selectCategory('bg')">扁钢</button>
+                    <button class="quick-btn" onclick="selectCategory('t')">T型钢</button>
+                    <button class="quick-btn" onclick="selectCategory('kb')">开平板</button>
+                    <button class="quick-btn" onclick="selectCategory('j')">冷卷/卷板</button>
+                    <button class="quick-btn" onclick="selectCategory('dxg')">镀锌型钢</button>
+                    <button class="quick-btn" onclick="selectCategory('zb')">中板</button>
+                    <button class="quick-btn" onclick="clearSelection()">清空选择</button>
+                </div>
+            </div>
+            
+            <!-- 筛选条件 -->
+            <div class="control-section">
+                <div class="control-section-title">🔍 筛选条件</div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>材质</label>
+                        <select id="texture">
+                            <option value="">全部材质</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>产地</label>
+                        <select id="area">
+                            <option value="">全部产地</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>规格</label>
+                        <select id="spec">
+                            <option value="">全部规格</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>仓库</label>
+                        <input type="text" id="warehouse" placeholder="输入仓库名称">
+                    </div>
+                    <div class="filter-group">
+                        <label>最低价格</label>
+                        <input type="number" id="minPrice" placeholder="0">
+                    </div>
+                    <div class="filter-group">
+                        <label>最高价格</label>
+                        <input type="number" id="maxPrice" placeholder="不限">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="queryData()">
+                    <span>🔍</span> 查询数据
+                </button>
+                <button class="btn btn-secondary" onclick="clearAll()">
+                    <span>🔄</span> 清空条件
+                </button>
+                <button class="btn btn-success" onclick="exportData('displayed')">
+                    <span>📋</span> 导出当前页
+                </button>
+                <button class="btn btn-success" onclick="exportData('all')">
+                    <span>📊</span> 导出全部
+                </button>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status" id="status">正在初始化...</div>
+            <div class="record-count" id="recordCount"></div>
+        </div>
+        
+        <div class="toolbar">
+            <div class="page-size-selector">
+                <label>每页显示:</label>
+                <button class="page-size-btn active" onclick="setPageSize(50)" data-size="50">50</button>
+                <button class="page-size-btn" onclick="setPageSize(100)" data-size="100">100</button>
+                <button class="page-size-btn" onclick="setPageSize(200)" data-size="200">200</button>
+                <button class="page-size-btn" onclick="setPageSize(500)" data-size="500">500</button>
+            </div>
+            <div class="sort-bar">
+                <button class="sort-btn active" onclick="sortBy('default')">默认排序</button>
+                <button class="sort-btn" onclick="sortBy('priceLiji')">理计价↑</button>
+                <button class="sort-btn" onclick="sortBy('priceLijiDesc')">理计价↓</button>
+                <button class="sort-btn" onclick="sortBy('priceBangji')">磅计价↑</button>
+                <button class="sort-btn" onclick="sortBy('priceBangjiDesc')">磅计价↓</button>
+                <button class="sort-btn" onclick="sortBy('weight')">重量</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>正在查询数据...</p>
+        </div>
+        
+        <div id="tableContainer">
+            <div class="no-data">
+                <div class="no-data-icon">📦</div>
+                <p>正在加载数据...</p>
+                <p style="font-size: 0.9em; margin-top: 10px;">请稍候</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 详情弹窗 -->
+    <div class="modal" id="detailModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">详细信息</div>
+                <div class="modal-close" onclick="closeModal()">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid" id="detailGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://gateway.xingyun361.com/api/xingyun/shopMall/queryPage';
+        const BRAND_API_URL = 'https://gateway.xingyun361.com/api/xingyun/shopMall/queryProductBrandNameSortPage'; // 获取品名列表的API
+        
+        // weightRange是重量范围，toleranceRange是公差范围
+        // 始终显示为 "重量/公差" 格式，如 --/8-12
+        function getWeightToleranceDisplay(r) {
+            const weight = r.weightRange || r.weight || '--';
+            const tolerance = r.toleranceRange || r.tolerance || '--';
+            return `${weight}/${tolerance}`;
+        }
+        
+        let metaData = {
+            brands: [],
+            textures: [],
+            areas: [],
+            specifications: [],
+            toleranceRanges: [],
+            weightRanges: [],
+            warehouses: []
+        };
+        
+        const categoryMap = {
+            'h': ['H型钢', '低合金H型钢'],
+            'gz': ['工字钢', '低合金工字钢', '协议类工字钢'],
+            'jg': ['角钢', '不等边角钢', '低合金角钢', '协议类角钢'],
+            'cg': ['槽钢', '低合金槽钢', '协议类槽钢', '协议类轻型槽钢'],
+            'yg': ['圆钢', '圆钢（机械类）', '协议类圆钢'],
+            'bg': ['扁钢', '协议类扁钢'],
+            't': ['T型钢', '低合金T型钢'],
+            'kb': ['普碳开平板', '低合金开平板', '花纹板'],
+            'j': ['冷卷', '普碳卷板', '低合金卷板'],
+            'dxg': ['镀锌角钢', '镀锌槽钢', '镀锌工字钢', '镀锌扁钢', '镀锌圆钢', '镀锌方钢'],
+            'zb': ['低合金四切', '低合金中板二切', '高强度低合金中板', '高强度低合金二切']
+        };
+        
+        let allRecords = [];
+        let filteredRecords = [];
+        let displayedRecords = [];
+        let selectedBrands = [];
+        let currentPageSize = 50;
+        let currentSort = 'default';
+        
+        async function init() {
+            await loadMetaData();
+            document.getElementById('status').textContent = '请选择品名后点击查询';
+        }
+        
+        async function loadMetaData() {
+            try {
+                // 使用专门的API获取品名列表
+                const brandResponse = await fetch(BRAND_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ pageNum: 1, pageSize: 50, keyword: '' })
+                });
+                
+                const brandData = await brandResponse.json();
+                
+                // 调试：在控制台输出API返回的数据结构
+                console.log('Brand API Response:', brandData);
+                
+                if (brandData.success && brandData.data) {
+                    // 尝试多种可能的数据结构
+                    let brandList = [];
+                    if (brandData.data.list && Array.isArray(brandData.data.list)) {
+                        brandList = brandData.data.list;
+                    } else if (Array.isArray(brandData.data)) {
+                        brandList = brandData.data;
+                    } else if (brandData.data.records && Array.isArray(brandData.data.records)) {
+                        brandList = brandData.data.records;
+                    } else if (brandData.data.rows && Array.isArray(brandData.data.rows)) {
+                        brandList = brandData.data.rows;
+                    }
+                    
+                    // 从返回的列表中提取品名
+                    metaData.brands = brandList.map(item => {
+                        // 尝试多种可能的字段名
+                        return item.productBrandName || item.name || item.brandName || item;
+                    }).filter(name => name && typeof name === 'string');
+                    
+                    console.log('Extracted brands:', metaData.brands);
+                }
+                
+                // 同时获取其他元数据（规格、材质等）
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ pageNum: 1, pageSize: 100 })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // 如果 queryProductBrandNameSortPage 没有返回品名，则使用 queryPage 的 productBrandNames 作为后备
+                    if (!metaData.brands || metaData.brands.length === 0) {
+                        metaData.brands = data.data.productBrandNames || [];
+                    }
+                    metaData.brands.sort();
+                    
+                    metaData.textures = data.data.productTextureNames || [];
+                    metaData.areas = data.data.prodAreaNames || [];
+                    metaData.specifications = data.data.specifications || [];
+                    
+                    initBrandSelector();
+                    initSelects();
+                    
+                    document.getElementById('brandLoading').style.display = 'none';
+                    document.getElementById('brandSelector').style.display = 'flex';
+                    
+                    document.getElementById('tableContainer').innerHTML = `
+                        <div class="no-data">
+                            <div class="no-data-icon">📦</div>
+                            <p>请选择品名并点击查询</p>
+                            <p style="font-size: 0.9em; margin-top: 10px;">已加载 ${metaData.brands.length} 种品名</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                showError('加载数据失败: ' + error.message);
+            }
+        }
+        
+        function showError(msg) {
+            document.getElementById('brandLoading').innerHTML = `<p style="color:red">${msg}</p><button onclick="location.reload()" style="margin-top:10px;padding:10px 20px;">重新加载</button>`;
+        }
+        
+        function initBrandSelector() {
+            const container = document.getElementById('brandSelector');
+            container.innerHTML = '';
+            // 只使用API返回的品名列表
+            metaData.brands.forEach(brand => {
+                const item = document.createElement('div');
+                item.className = 'brand-item';
+                item.textContent = brand;
+                item.onclick = () => toggleBrand(brand, item);
+                container.appendChild(item);
+            });
+        }
+        
+        function toggleBrand(brand, element) {
+            if (selectedBrands.includes(brand)) {
+                selectedBrands = selectedBrands.filter(b => b !== brand);
+                element.classList.remove('selected');
+            } else {
+                selectedBrands.push(brand);
+                element.classList.add('selected');
+            }
+        }
+        
+        function selectCategory(cat) {
+            clearSelection();
+            const brands = categoryMap[cat] || [];
+            brands.forEach(brand => {
+                const items = document.querySelectorAll('.brand-item');
+                items.forEach(item => {
+                    if (item.textContent === brand) {
+                        item.classList.add('selected');
+                        if (!selectedBrands.includes(brand)) {
+                            selectedBrands.push(brand);
+                        }
+                    }
+                });
+            });
+        }
+        
+        function clearSelection() {
+            selectedBrands = [];
+            document.querySelectorAll('.brand-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+        }
+        
+        function initSelects() {
+            const textureSelect = document.getElementById('texture');
+            textureSelect.innerHTML = '<option value="">全部材质</option>';
+            metaData.textures.forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = t;
+                textureSelect.appendChild(option);
+            });
+            
+            const areaSelect = document.getElementById('area');
+            areaSelect.innerHTML = '<option value="">全部产地</option>';
+            metaData.areas.forEach(a => {
+                const option = document.createElement('option');
+                option.value = a;
+                option.textContent = a;
+                areaSelect.appendChild(option);
+            });
+            
+            const specSelect = document.getElementById('spec');
+            specSelect.innerHTML = '<option value="">全部规格</option>';
+        }
+        
+        function setPageSize(size) {
+            currentPageSize = size;
+            document.querySelectorAll('.page-size-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.size) === size);
+            });
+            if (filteredRecords.length > 0) {
+                applyFilters();
+            }
+        }
+        
+        async function queryData() {
+            if (selectedBrands.length === 0) {
+                alert('请至少选择一个品名');
+                return;
+            }
+            
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('tableContainer').innerHTML = '';
+            document.getElementById('status').textContent = '查询中...';
+            
+            try {
+                const requestBody = {
+                    pageNum: 1,
+                    pageSize: currentPageSize,
+                    productBrandNames: selectedBrands
+                };
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.stocks) {
+                    allRecords = data.data.stocks;
+                    
+                    // 调试：检查返回的数据
+                    console.log('Query returned', allRecords.length, 'records');
+                    console.log('First record:', allRecords[0]);
+                    console.log('Product brand names in records:', [...new Set(allRecords.map(r => r.productBrandName))]);
+                    
+                    if (data.data.specifications) {
+                        const specSelect = document.getElementById('spec');
+                        specSelect.innerHTML = '<option value="">全部规格</option>';
+                        data.data.specifications.forEach(s => {
+                            const option = document.createElement('option');
+                            option.value = s;
+                            option.textContent = s;
+                            specSelect.appendChild(option);
+                        });
+                    }
+                    
+                    applyFilters();
+                    document.getElementById('status').textContent = 
+                        `查询成功: ${selectedBrands.join(', ')}`;
+                } else {
+                    showNoData('未找到数据');
+                }
+            } catch (error) {
+                showNoData('查询失败: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+            }
+        }
+        
+        function applyFilters() {
+            let records = [...allRecords];
+            
+            if (selectedBrands.length > 0) {
+                records = records.filter(r => {
+                    // 检查多个可能的品名字段
+                    const brandNames = [
+                        r.productBrandName,
+                        r.onlineProductBrandName,
+                        r.productBrand,
+                        r.brandName,
+                        r.brand
+                    ].filter(Boolean);
+                    
+                    const match = brandNames.some(name => selectedBrands.includes(name));
+                    if (!match && r.productBrandName) {
+                        console.log('Brand mismatch:', brandNames, 'not in', selectedBrands);
+                    }
+                    return match;
+                });
+            }
+            
+            const texture = document.getElementById('texture').value;
+            const area = document.getElementById('area').value;
+            const spec = document.getElementById('spec').value;
+            const warehouse = document.getElementById('warehouse').value.trim().toLowerCase();
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            
+            if (texture) records = records.filter(r => r.productTextureName === texture);
+            if (area) records = records.filter(r => r.prodAreaName === area);
+            if (spec) records = records.filter(r => r.specification === spec);
+            if (warehouse) records = records.filter(r => (r.warehouseName || '').toLowerCase().includes(warehouse));
+            
+            records = records.filter(r => {
+                const price = r.priceManager || r.onlineLowestPrice || 0;
+                return price >= minPrice && price <= maxPrice;
+            });
+            
+            filteredRecords = records;
+            sortRecords();
+            displayedRecords = filteredRecords.slice(0, currentPageSize);
+            
+            renderTable(displayedRecords);
+            document.getElementById('recordCount').textContent = 
+                `共 ${filteredRecords.length} 条，当前显示 ${displayedRecords.length} 条`;
+        }
+        
+        function sortBy(type) {
+            currentSort = type;
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (filteredRecords.length > 0) {
+                sortRecords();
+                displayedRecords = filteredRecords.slice(0, currentPageSize);
+                renderTable(displayedRecords);
+            }
+        }
+        
+        function sortRecords() {
+            switch(currentSort) {
+                case 'priceLiji':
+                    filteredRecords.sort((a, b) => (a.priceManager || 0) - (b.priceManager || 0));
+                    break;
+                case 'priceLijiDesc':
+                    filteredRecords.sort((a, b) => (b.priceManager || 0) - (a.priceManager || 0));
+                    break;
+                case 'priceBangji':
+                    filteredRecords.sort((a, b) => (a.pricePound || 0) - (b.pricePound || 0));
+                    break;
+                case 'priceBangjiDesc':
+                    filteredRecords.sort((a, b) => (b.pricePound || 0) - (a.pricePound || 0));
+                    break;
+                case 'weight':
+                    filteredRecords.sort((a, b) => (b.avbleManagerWeight || 0) - (a.avbleManagerWeight || 0));
+                    break;
+            }
+        }
+        
+        function renderTable(records) {
+            const container = document.getElementById('tableContainer');
+            
+            if (records.length === 0) {
+                showNoData('没有符合条件的记录');
+                return;
+            }
+            
+            let html = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>品名</th>
+                            <th>材质</th>
+                            <th>规格</th>
+                            <th>长度(m)</th>
+                            <th>重量/公差</th>
+                            <th>产地</th>
+                            <th>仓库</th>
+                            <th>价格(元/吨)</th>
+                            <th>可售重量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            records.forEach((r, i) => {
+                const priceLiji = r.priceManager || 0;
+                const priceBangji = r.pricePound || 0;
+                const diff = priceBangji - priceLiji;
+                
+                // 尝试多种可能的品名字段名，优先显示 onlineProductBrandName（更友好的名称）
+                const brandName = r.onlineProductBrandName || r.productBrandName || r.productBrand || r.brandName || r.brand || '-';
+                const textureName = r.productTextureName || r.productTexture || r.textureName || r.texture || '-';
+                
+                html += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong>${brandName}</strong></td>
+                        <td>${textureName}</td>
+                        <td>${r.specification || '-'}</td>
+                        <td>${r.length || '-'}</td>
+                        <td>${getWeightToleranceDisplay(r)}</td>
+                        <td>${r.prodAreaName || '-'}</td>
+                        <td>${r.warehouseName || '-'}</td>
+                        <td>
+                            <div class="price-cell">
+                                <div class="price-liji">
+                                    理计: ${priceLiji ? priceLiji.toFixed(2) : '-'}
+                                </div>
+                                ${priceBangji ? `
+                                <div class="price-bangji">
+                                    磅计: ${priceBangji.toFixed(2)}
+                                </div>
+                                <div class="price-diff">
+                                    磅差: +${diff.toFixed(2)}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </td>
+                        <td>${r.avbleManagerWeight ? r.avbleManagerWeight.toFixed(3) + ' 吨' : '-'}</td>
+                        <td>
+                            <button class="detail-btn" onclick="showDetail(${i})">详情</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function showNoData(msg) {
+            document.getElementById('tableContainer').innerHTML = `
+                <div class="no-data">
+                    <div class="no-data-icon">📭</div>
+                    <p>${msg}</p>
+                </div>
+            `;
+        }
+        
+        function showDetail(index) {
+            const r = displayedRecords[index];
+            if (!r) return;
+            
+            const priceLiji = r.priceManager || 0;
+            const priceBangji = r.pricePound || 0;
+            const diff = priceBangji - priceLiji;
+            
+            const grid = document.getElementById('detailGrid');
+            grid.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-item-label">品名</div>
+                    <div class="detail-item-value">${r.onlineProductBrandName || r.productBrandName || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">材质</div>
+                    <div class="detail-item-value">${r.productTextureName || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">规格</div>
+                    <div class="detail-item-value">${r.specification || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">长度</div>
+                    <div class="detail-item-value">${r.length || '-'} m</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">重量/公差</div>
+                    <div class="detail-item-value">${getWeightToleranceDisplay(r)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">重量范围</div>
+                    <div class="detail-item-value">${r.weightRange || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">公差范围</div>
+                    <div class="detail-item-value">${r.toleranceRange || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">产地</div>
+                    <div class="detail-item-value">${r.prodAreaName || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">仓库</div>
+                    <div class="detail-item-value">${r.warehouseName || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">库区</div>
+                    <div class="detail-item-value">${r.stockZoneName || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">公差范围</div>
+                    <div class="detail-item-value">${r.toleranceRange || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">重量范围</div>
+                    <div class="detail-item-value">${r.weightRange || '-'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">单价(理计)</div>
+                    <div class="detail-item-value price-liji">${priceLiji ? priceLiji.toFixed(2) : '-'} 元/吨</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">单价(磅计)</div>
+                    <div class="detail-item-value price-bangji">${priceBangji ? priceBangji.toFixed(2) : '-'} 元/吨</div>
+                </div>
+                ${priceBangji ? `
+                <div class="detail-item">
+                    <div class="detail-item-label">磅差</div>
+                    <div class="detail-item-value">+${diff.toFixed(2)} 元/吨</div>
+                </div>
+                ` : ''}
+                <div class="detail-item">
+                    <div class="detail-item-label">在线最低价</div>
+                    <div class="detail-item-value">${r.onlineLowestPrice ? r.onlineLowestPrice.toFixed(2) : '-'} 元/吨</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">可售数量</div>
+                    <div class="detail-item-value">${r.avbleAmount || '-'} 支</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">可售重量(理计)</div>
+                    <div class="detail-item-value">${r.avbleManagerWeight ? r.avbleManagerWeight.toFixed(3) : '-'} 吨</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">可售重量(磅计)</div>
+                    <div class="detail-item-value">${r.avblePoundWeight ? r.avblePoundWeight.toFixed(3) : '-'} 吨</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-label">单支重</div>
+                    <div class="detail-item-value">${r.meterWeight ? r.meterWeight.toFixed(3) : '-'} kg/m</div>
+                </div>
+                <div class="detail-item full-width">
+                    <div class="detail-item-label">货主</div>
+                    <div class="detail-item-value">${r.ownerName || '-'}</div>
+                </div>
+                <div class="detail-item full-width">
+                    <div class="detail-item-label">组织</div>
+                    <div class="detail-item-value">${r.orgShortName || '-'}</div>
+                </div>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function closeModal(e) {
+            if (!e || e.target.id === 'detailModal') {
+                document.getElementById('detailModal').classList.remove('active');
+            }
+        }
+        
+        function clearAll() {
+            clearSelection();
+            document.getElementById('texture').value = '';
+            document.getElementById('area').value = '';
+            document.getElementById('spec').innerHTML = '<option value="">全部规格</option>';
+            document.getElementById('warehouse').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('status').textContent = '请选择品名后点击查询';
+            document.getElementById('recordCount').textContent = '';
+            document.getElementById('tableContainer').innerHTML = `
+                <div class="no-data">
+                    <div class="no-data-icon">📦</div>
+                    <p>请选择品名并点击查询</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">已加载 ${metaData.brands.length} 种品名</p>
+                </div>
+            `;
+            allRecords = [];
+            filteredRecords = [];
+            displayedRecords = [];
+        }
+        
+        function exportData(mode) {
+            const records = mode === 'all' ? filteredRecords : displayedRecords;
+            if (records.length === 0) {
+                alert('没有数据可导出');
+                return;
+            }
+            
+            let csv = '\uFEFF序号,品名,材质,规格,长度,产地,仓库,库区,理计单价,磅计单价,磅差,在线最低价,可售数量,可售重量(理计),可售重量(磅计),单支重,货主,组织\n';
+            records.forEach((r, i) => {
+                const priceLiji = r.priceManager || 0;
+                const priceBangji = r.pricePound || 0;
+                const diff = priceBangji - priceLiji;
+                csv += `${i+1},${r.productBrandName || ''},${r.productTextureName || ''},${r.specification || ''},${r.length || ''},${r.prodAreaName || ''},${r.warehouseName || ''},${r.stockZoneName || ''},${priceLiji},${priceBangji},${diff},${r.onlineLowestPrice || ''},${r.avbleAmount || ''},${r.avbleManagerWeight || ''},${r.avblePoundWeight || ''},${r.meterWeight || ''},${r.ownerName || ''},${r.orgShortName || ''}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `xingyun_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            
+            alert(`已导出 ${records.length} 条记录`);
+        }
+        
+        ['texture', 'area', 'spec'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                if (allRecords.length > 0) applyFilters();
+            });
+        });
+        
+        ['warehouse', 'minPrice', 'maxPrice'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                if (allRecords.length > 0) applyFilters();
+            });
+        });
+        
+        init();
+    </script>
+</body>
+</html>
